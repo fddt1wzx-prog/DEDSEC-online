@@ -2,11 +2,9 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// خريطة لتخزين آخر وقت نشاط لكل مستخدم (المعرف -> وقت آخر ping)
 const activeUsers = new Map();
-const TIMEOUT = 70 * 1000; // 70 ثانية مهلة، أطول قليلاً من فترة التحديث لضمان عدم الخروج المبكر
+const TIMEOUT = 70 * 1000;
 
-// تنظيف المستخدمين الغير نشطين
 function cleanup() {
   const now = Date.now();
   for (const [id, lastSeen] of activeUsers) {
@@ -16,35 +14,26 @@ function cleanup() {
   }
 }
 
-app.set('trust proxy', true); // لاستخراج IP الحقيقي خلف البروكسي (مهم في Render)
-
+app.set('trust proxy', true);
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   next();
 });
 
 app.get('/counter', (req, res) => {
-  
   let userId = req.query.id;
   if (!userId || userId.trim() === '') {
-  
     userId = req.ip || req.connection.remoteAddress;
   }
-
-
   activeUsers.set(userId, Date.now());
-
-
   cleanup();
-
-  
   res.json({ count: activeUsers.size });
 });
 
 app.get('/', (req, res) => {
-  res.send('DEDSEC Active Counter Server يعمل ✅');
+  res.send('DEDSEC Active Counter Server ✅');
 });
 
 app.listen(PORT, () => {
-  console.log(`DEDSEC Server شغال على المنفذ ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
