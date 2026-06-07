@@ -2,9 +2,9 @@
   "name": "dedsec-active-counter",
   "version": "1.0.0",
   "description": "DEDSEC Active User Counter",
-  "main": "npm server.js",
+  "main": "node server.js",
   "scripts": {
-    "start": "npm server.js"
+    "start": "server.js"
   },
   "dependencies": {
     "express": "^4.18.2"
